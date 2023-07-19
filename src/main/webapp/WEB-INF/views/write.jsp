@@ -28,16 +28,18 @@
     </div>
 </nav>
 <div class="container mt-3">
-    <form action="/action_page.php">
+<%-- form 태그 : 사용자가 다양한 정보를 입력하고 서로 전달할 때 사용하는 태그--%>
+    <form action="/product" method="post" enctype="application/x-www-form-urlencoded">
         <div class="mb-3 mt-3">
-            <input type="text" class="form-control" placeholder="Enter 상품명">
+            <input type="text" class="form-control" placeholder="Enter 상품명" value="바나나" name="name">
         </div>
         <div class="mb-3">
-            <input type="text" class="form-control" placeholder="Enter 상품가격">
+            <input type="text" class="form-control" placeholder="Enter 상품가격" value="1000" name="price">
         </div>
         <div class="mb-3">
-            <input type="text" class="form-control" placeholder="Enter 상품재고">
+            <input type="text" class="form-control" placeholder="Enter 상품재고" value="50" name="qty">
         </div>
+        <%-- submit : input 태그에 있는 데이터를 보내준다--%>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>

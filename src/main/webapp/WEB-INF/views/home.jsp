@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,24 +39,17 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>1</td>
-                <td>바나나</td>
-                <td>1000원</td>
-                <td>50개</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>사과</td>
-                <td>2000원</td>
-                <td>50개</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>참외</td>
-                <td>500원</td>
-                <td>50개</td>
-            </tr>
+            <%-- requst에 접근한다 : items="${key값}" --%>
+            <c:forEach var="p" items="${productlist}">
+                <tr>
+                <%-- 변수명을 적으면 알아서 get해준다, Product에 @Getter가 무조건 있어야 가능하다 --%>
+                    <td>${p.id}</td>
+                    <td>${p.name}</td>
+                    <td>${p.price}원</td>
+                    <td>${p.qty}개</td>
+                </tr>
+            </c:forEach>
+
         </tbody>
     </table>
 </div>
