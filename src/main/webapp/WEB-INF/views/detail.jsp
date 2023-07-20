@@ -28,21 +28,26 @@
     </div>
 </nav>
 <div class="container mt-3">
-<%-- form 태그 : 사용자가 다양한 정보를 입력하고 서로 전달할 때 사용하는 태그--%>
-    <form action="/product" method="post" enctype="application/x-www-form-urlencoded">
+    <form action="/product/update" method="post" enctype="application/x-www-form-urlencoded">
         <div class="mb-3 mt-3">
-            <input type="text" class="form-control" placeholder="Enter 상품명" value="바나나" name="name">
+            <input type="text" class="form-control" items="${p}" value="${p.id}" name="id">
+        </div>
+        <div class="mb-3 mt-3">
+            <input type="text" class="form-control" items="${p}" value="${p.name}" name="name">
         </div>
         <div class="mb-3">
-            <input type="text" class="form-control" placeholder="Enter 상품가격" value="1000" name="price">
+            <input type="text" class="form-control" items="${p}" value="${p.price}" name="price">
         </div>
         <div class="mb-3">
-            <input type="text" class="form-control" placeholder="Enter 상품재고" value="50" name="qty">
+            <input type="text" class="form-control" items="${p}" value="${p.qty}" name="qty">
         </div>
-        <%-- submit : input 태그에 있는 데이터를 보내준다--%>
-        <button type="submit" class="btn btn-primary">상품등록</button>
+        <button type="submit" class="btn btn-primary">상품수정</button>
+
+    </form>
+    <form action="/product/delete" method="post">
+        <input type="hidden" class="form-control" value="${p.id}" name="id">
+        <button type="submit" class="btn btn-danger">상품삭제</button>
     </form>
 </div>
-
 </body>
 </html>

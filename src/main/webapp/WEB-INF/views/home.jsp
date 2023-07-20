@@ -44,12 +44,11 @@
                 <tr>
                 <%-- 변수명을 적으면 알아서 get해준다, Product에 @Getter가 무조건 있어야 가능하다 --%>
                     <td>${p.id}</td>
-                    <td>${p.name}</td>
+                    <td><a href="/product/${p.id}">${p.name}</a></td>
                     <td>${p.price}원</td>
                     <td>${p.qty}개</td>
                 </tr>
             </c:forEach>
-
         </tbody>
     </table>
 </div>

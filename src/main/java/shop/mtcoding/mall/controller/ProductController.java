@@ -3,12 +3,14 @@ package shop.mtcoding.mall.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import shop.mtcoding.mall.model.Product;
 import shop.mtcoding.mall.model.ProductRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 // @Controller 어노테이션은 Spring Framework에서 컨트롤러 클래스를 지정하는 어노테이션입니다.
@@ -20,6 +22,26 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
+    @PostMapping("/product/delete")
+    public String delete(int id){
+        productRepository.deleteById(id);
+        return "redirect:/";
+    }
+
+    @PostMapping("product/update")
+    public String update(String name, int price, int qty){
+        productRepository.update(name, price, qty);
+        return "redirect:/";
+    }
+
+    // @PathVariable : URI 매핑에서 템플릿 변수를 처리하고 이를 메서드 매개변수로 설정할 수 있다
+    @GetMapping("product/{id}")
+    public String detail(@PathVariable int id, HttpServletRequest request){
+        Product product = productRepository.fingById(id);
+        request.setAttribute("p", product);
+        return "detail";
+    }
+
     // 메인 페이지를 get해서 읽어줘
     // @GetMapping 어노테이션은 HTTP GET 요청을 처리하는 메서드를 지정하는 어노테이션입니다.
     @GetMapping("/")
@@ -29,6 +51,7 @@ public class ProductController {
         List<Product> productList = productRepository.findAll();
         // 데이터는 먼저 request에 담는다.
         // request.setAttribute(key, value);
+        // request.setAttribute() 메서드를 사용하는 이유는 웹 애플리케이션의 서블릿 또는 JSP에서 데이터를 다른 페이지로 전달하기 위해 사용됩니다.
         request.setAttribute("productlist", productList);
         return "home";
     }
