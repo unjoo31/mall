@@ -6,10 +6,13 @@ import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
+// 특정 설정 클래스를 현재 테스트 클래스에 포함시킬 수 있습니다.
+// ProductRepository.class, SellerRepository.class를 테스트 클래스에 포함시킨다
 @Import({
         ProductRepository.class,
         SellerRepository.class
 })
+// JPA 관련 로직을 테스트를 하겠다
 @DataJpaTest // T -> DS -> C -> ( R -> DB )
 public class ProductRepositoryTest {
 
@@ -19,6 +22,7 @@ public class ProductRepositoryTest {
     @Autowired
     private SellerRepository sellerRepository;
 
+    // 해당 메서드를 테스트 메서드로 지정하는 역할을 합니다.
     @Test
     public void findByIdDTO_test(){
         // given : 테스트를 하기 위해서 필요한 데이터 만들기
