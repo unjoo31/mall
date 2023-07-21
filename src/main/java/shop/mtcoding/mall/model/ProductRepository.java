@@ -1,11 +1,14 @@
 package shop.mtcoding.mall.model;
 
+import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.Tuple;
+import java.math.BigInteger;
 import java.util.List;
 
 @Repository // 컴퍼넌트 스캔 (IoC 컨테이너에 알아서 new 해준다)
@@ -16,6 +19,28 @@ public class ProductRepository {
     // 영속성 컨텍스트(Persistence Context)와 데이터베이스 간의 상호작용을 관리하는 역할을 한다
     // JPA 엔티티와 데이터베이스 사이의 매핑을 처리하고 데이터베이스에 대한 CRUD(Create, Read, Update, Delete) 작업을 수행합니다.
     private EntityManager em;
+
+
+    public Product findByIdJoinSeller(int id){
+        Query query = em.createNativeQuery("select *\n" +
+                "from product_tb pt inner join seller_tb st\n" +
+                "on pt.seller_id = st.id\n" +
+                "where pt.id = :id", Product.class);
+        query.setParameter("id", id);
+        Product product = (Product) query.getSingleResult();
+        return product;
+    }
+
+    public ProductDTO findByIdDTO(int id){
+        // 조회할거니까 매핑할 클래스를 적어줘야함 -> DTO의 경우 @Entity하지 못함(table를 생성할 수 업기 때문)
+        Query query = em.createNativeQuery("select id, name, price, qty, '설명' as des from product_tb where id = :id");
+        query.setParameter("id", id);
+        // glrm 라이브러리를 사용하여 오브젝트 매핑을 해준다
+        JpaResultMapper mapper = new JpaResultMapper();
+        // uniqueResult() : 하나의 건일때, list() : 여러 건일때
+        ProductDTO productDTO = mapper.uniqueResult(query, ProductDTO.class);
+        return productDTO;
+    }
 
     // Transactional :다 알아서 transaction 시작하고 종료함
     // insert, update, delete
@@ -34,7 +59,18 @@ public class ProductRepository {
         query.executeUpdate();
     }
 
+    @Transactional
+    public void saveWithFK(String name, int price, int qty, int sellerId){
+        Query query = em.createNativeQuery("insert into product_tb(name, price, qty, seller_id) values(:name, :price, :qty, :sellerId)");
+        query.setParameter("name", name);
+        query.setParameter("price", price);
+        query.setParameter("qty", qty);
+        query.setParameter("sellerId", sellerId);
+        query.executeUpdate();
+    }
+
     public List<Product> findAll() {
+        // Product.class : JPA의 createNativeQuery 메서드에서 사용되는 것으로, SQL 쿼리 결과를 매핑할 클래스를 지정하는 역할을 합니다.
         Query query = em.createNativeQuery("select * from product_tb", Product.class);
         // getResultList() 메서드는 JPA(Java Persistence API)에서 사용되는 메서드 중 하나로, 쿼리를 실행하여 데이터베이스에서 가져온 결과를 리스트로 반환합니다.
         List<Product> productList = query.getResultList();

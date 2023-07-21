@@ -23,4 +23,8 @@ public class Product {
     private String name;
     private Integer price;
     private Integer qty;
+
+    @ManyToOne // 테이블 만들어질 때 fk가 설정된다
+    // 오브젝트를 붙이면 된다. 변수로 하지 않고 오브젝트로 하는 이유 : 연관관계가 있기 때문 -> 판매자가 있어야 상품을 등록할 수 있기 때문
+    private Seller seller;
 }
