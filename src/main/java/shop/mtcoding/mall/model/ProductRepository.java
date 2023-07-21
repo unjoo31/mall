@@ -20,28 +20,6 @@ public class ProductRepository {
     // JPA 엔티티와 데이터베이스 사이의 매핑을 처리하고 데이터베이스에 대한 CRUD(Create, Read, Update, Delete) 작업을 수행합니다.
     private EntityManager em;
 
-
-    public Product findByIdJoinSeller(int id){
-        Query query = em.createNativeQuery("select *\n" +
-                "from product_tb pt inner join seller_tb st\n" +
-                "on pt.seller_id = st.id\n" +
-                "where pt.id = :id", Product.class);
-        query.setParameter("id", id);
-        Product product = (Product) query.getSingleResult();
-        return product;
-    }
-
-    public ProductDTO findByIdDTO(int id){
-        // 조회할거니까 매핑할 클래스를 적어줘야함 -> DTO의 경우 @Entity하지 못함(table를 생성할 수 업기 때문)
-        Query query = em.createNativeQuery("select id, name, price, qty, '설명' as des from product_tb where id = :id");
-        query.setParameter("id", id);
-        // glrm 라이브러리를 사용하여 오브젝트 매핑을 해준다
-        JpaResultMapper mapper = new JpaResultMapper();
-        // uniqueResult() : 하나의 건일때, list() : 여러 건일때
-        ProductDTO productDTO = mapper.uniqueResult(query, ProductDTO.class);
-        return productDTO;
-    }
-
     // Transactional :다 알아서 transaction 시작하고 종료함
     // insert, update, delete
     @Transactional
@@ -56,16 +34,6 @@ public class ProductRepository {
         query.setParameter("qty", qty);
         // 이 메서드를 호출하여 Native SQL 쿼리를 실행하고 데이터베이스에 영향을 미치는 작업을 수행합니다.
         // 위의 코드에서는 데이터를 삽입(insert)하는 작업을 수행하고 있습니다.
-        query.executeUpdate();
-    }
-
-    @Transactional
-    public void saveWithFK(String name, int price, int qty, int sellerId){
-        Query query = em.createNativeQuery("insert into product_tb(name, price, qty, seller_id) values(:name, :price, :qty, :sellerId)");
-        query.setParameter("name", name);
-        query.setParameter("price", price);
-        query.setParameter("qty", qty);
-        query.setParameter("sellerId", sellerId);
         query.executeUpdate();
     }
 
@@ -122,5 +90,36 @@ public class ProductRepository {
         query.setParameter("price", price);
         query.setParameter("qty", qty);
         query.executeUpdate();
+    }
+
+    public ProductDTO findByIdDTO(int id){
+        // 조회할거니까 매핑할 클래스를 적어줘야함 -> DTO의 경우 @Entity하지 못함(table를 생성할 수 업기 때문)
+        Query query = em.createNativeQuery("select id, name, price, qty, '설명' as des from product_tb where id = :id");
+        query.setParameter("id", id);
+        // glrm 라이브러리를 사용하여 오브젝트 매핑을 해준다
+        JpaResultMapper mapper = new JpaResultMapper();
+        // uniqueResult() : 하나의 건일때, list() : 여러 건일때
+        ProductDTO productDTO = mapper.uniqueResult(query, ProductDTO.class);
+        return productDTO;
+    }
+
+    @Transactional
+    public void saveWithFK(String name, int price, int qty, int sellerId){
+        Query query = em.createNativeQuery("insert into product_tb(name, price, qty, seller_id) values(:name, :price, :qty, :sellerId)");
+        query.setParameter("name", name);
+        query.setParameter("price", price);
+        query.setParameter("qty", qty);
+        query.setParameter("sellerId", sellerId);
+        query.executeUpdate();
+    }
+
+    public Product findByIdJoinSeller(int id){
+        Query query = em.createNativeQuery("select *\n" +
+                "from product_tb pt inner join seller_tb st\n" +
+                "on pt.seller_id = st.id\n" +
+                "where pt.id = :id", Product.class);
+        query.setParameter("id", id);
+        Product product = (Product) query.getSingleResult();
+        return product;
     }
 }
